@@ -3,7 +3,7 @@
 ```bash
 docker build -t karch .
 
-docker run --rm -ti archlinux:latest
+docker run --rm -ti karch
 ```
 ## compile
 

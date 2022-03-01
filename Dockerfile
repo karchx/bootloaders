@@ -7,8 +7,15 @@ WORKDIR /archlinux
 RUN	 pacman -Syy
 
 # Install base-devel
-RUN	 pacman -S --noconfirm base-devel
+RUN	 pacman -S --noconfirm base-devel nasm python3 vim\
+    xorg xorg-server
+
+# Install qemu
+RUN pacman -S --noconfirm qemu
 
 ENV LANG=en_US.UTF-8
 
-CMD ["/usr/bin/bash"]
+COPY hello.asm /archlinux/
+COPY run.sh /archlinux/
+
+CMD ["/usr/bin/bash", "run.sh", "hello"]
