@@ -1,4 +1,10 @@
 
+## Docker
+```bash
+docker build -t karch .
+
+docker run --rm -ti archlinux:latest
+```
 ## compile
 
 ```bash
