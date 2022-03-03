@@ -3,8 +3,16 @@
 ```bash
 docker build -t karch .
 
-docker run --rm -ti karch
+docker run --rm -it -v /tmp/.X11-unix/:/tmp/.X11-unix\
+	-e "DISPLAY=:0" karch
+
+or
+
+docker run --rm -it -v /tmp/.X11-unix/:/tmp/.X11-unix\
+	-e "DISPLAY=${DISPLAY:-:0.0}" karch
 ```
+/tmp/.X11-unix -> assets
+
 ## compile
 
 ```bash

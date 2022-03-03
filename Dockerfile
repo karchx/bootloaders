@@ -10,11 +10,11 @@ RUN	 pacman -Syyuu --disable-download-timeout --noconfirm
 RUN	 pacman -S --disable-download-timeout --noconfirm base-devel nasm python3 vim
 
 # Install qemu
-RUN pacman -S --noconfirm qemu
+RUN pacman -S --disable-download-timeout --noconfirm qemu
 
 ENV LANG=en_US.UTF-8
 
 COPY hello.asm /karch/
 COPY run.sh /karch/
 
-CMD ["/usr/bin/bash"]
+CMD ["./run.sh", "hello"]
