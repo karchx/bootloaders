@@ -15,7 +15,7 @@ docker run --rm -it -v /tmp/.X11-unix/:/tmp/.X11-unix\
 ## compile
 
 ```bash
-./run.sh file.asm
+./run.sh <file>
 ```
 
 ## articles
