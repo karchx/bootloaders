@@ -31,3 +31,56 @@
 %define VGA_OFFSET 0xA00 	; direccion del vga
 
 %define SCORE_DIGIT_COUNT 5
+
+struc GameState
+  .running: resb 1
+  .ball_x: resw 1
+  .ball_y: resw 1
+  .ball_dx: resw 1
+  .ball_dy: resw 1
+  .bar_x: resw 1
+  .bar_y: resw 1
+  .bar_dw: resw 1
+  .score_sign resb SCORE_DIGIT_COUNT
+endstruc
+
+entry:
+  ; VGA mode 0x13
+  ; 320x200 256 colors
+  mov ax, 0x13
+  int 0x10
+
+  xor ax, ax
+  mov es, ax
+  mov ds, ax
+  mov cs, GameState_size
+  mov si, initial_game_state
+  mov di, game_state
+  rep movsb
+  
+  mov dword [0x0070], draw_frame
+
+
+draw_frame:
+  pusha
+
+  xor ax, ax
+  mov ds, ax
+
+  mov es, ax
+  mov ah, 0x13
+  mov bx, 0x0064
+  mov cl, SCORE_DIGIT_COUNT
+  mov dx, dx
+  mov bp, game_state + GameState.score_sign
+  int 10h
+
+  mov ax, VGA_OFFSET
+  mov es, ax
+  test byte [game_state + GateState.running], 1
+  jz stop_state
+
+stop_state:
+  popa
+  iret
+

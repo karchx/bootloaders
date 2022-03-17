@@ -14,7 +14,7 @@ RUN pacman -S --disable-download-timeout --noconfirm qemu
 
 ENV LANG=en_US.UTF-8
 
-COPY hello.asm /karch/
+COPY pinpog.asm /karch/
 COPY run.sh /karch/
 
-CMD ["./run.sh", "hello"]
+CMD ["./run.sh", "pinpog"]
