@@ -112,6 +112,45 @@ draw_frame:
   test byte [game_state + GateState.running], 1
   jz stop_state
 
+running_state:
+	mov al, BACKGROUND_COLOR
+	call fill_bar
+	call fill_ball
+
+	;; if(bal_x <= 0 || ball_x >= WIDTH - BALL_WIDTH)
+	;; 		ball_dx = -ball_dx
+
+	mov ax, word [game_state + GameState.ball_x]
+	cmp ax, 0
+	jle .neg_ball_dx
+
+	cmp ax, WIDTH - BALL_WIDTH
+	jl .ball_x_col_end
+.neg_ball_dx:
+	neg word[game_state + GameState.ball_dx]
+.ball_x_col_end:
+	mov ax, word[game_state + GameState.ball_y]
+	cmp ax, HEIGHT - BALL_HEIGHT
+	jpe .game_over
+
+	cmp ax, 0
+	jg .ball_y_col_end
+
+	neg word [game_state + GameState.ball_dy]
+.ball_y_col_end:
+	xor ax, ax
+	cmp word [game_state + GameState.bar_x], ax
+	jle .neg_bar_dx
+
+	mov ax, WIDTH
+	sub ax, word [game_state + GameState.bar_len]
+	cmp word [game_state + GameState.bar_x], ax
+	jl .bar_x_col
+
+.neg_bar_dx:
+	neg word[game_state + GameState.bar_dx]
+	mov word[game_state + GameState.bar_x], ax
+
 stop_state:
   popa
   iret
