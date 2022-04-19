@@ -59,7 +59,39 @@ entry:
   rep movsb
   
   mov dword [0x0070], draw_frame
+.loop:
+	hlt
+	mov ah, 0x1
+	int 0x16
+	jz .loop
 
+	xor ah, ah
+	int 0x16
+
+	cmp al, 'a'
+	jz .swipe_left
+
+	cmp al, 'd'
+	jz .swipe_right
+
+	cmp al, ' '
+	jz .toggle_pause
+
+	cmp al, 'f'
+	jz entry
+
+	jmp .loop
+
+.swipe_left:
+	mov word [game_state + GameState.bar_dx], - BAR_VELOCITY
+	jmp .loop
+.swipe_right:
+	mov word [game_state + GameState.bar_dx], - BAR_VELOCITY
+	jmp .loop
+
+.toogle_pause:
+	not byte [game_state + GameState.running]
+	jmp .loop
 
 draw_frame:
   pusha
