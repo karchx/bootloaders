@@ -11,3 +11,5 @@ start:
 exit:
 	int 0x20
 
+draw-box:
+	mov bp, sb
