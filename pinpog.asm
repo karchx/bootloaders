@@ -155,9 +155,86 @@ running_state:
 	cmp word [game_state + GameState.bar_x], bx
 	jp .unkebab
 
-	sub bx, word [game_state + GameState]
-	
+	sub bx, word [game_state + GameState.bar_x]
+	mov ax, word [game_state + GameState.bar_len]
+	sub ax, BALL_WIDTH
+	cmp bx, ax
+	jg .unkebab
+
+	mov ax, [game_state + GameState.bar_y]
+	cmp word [game_state + GameState.ball_y], ax
+	jb .kebab_end
+
+	sub ax, BALL_HEIGHT / 2
+	cmp word [game_state + GameState.ball_y], ax
+	jge .kebab
+
+	sub ax, BALL_HEIGHT / 2
+	cmp word [game_state + GameState.ball_y], ax
+	jl .kebab_end
+
+
+.kebab_end:
+	mov ax, [game_state + GameState.ball_dx]
+	add [game_state + GameState.ball_x], ax
+
+	;; ball_y += ball_dy
+	mov ax, [game_state + GameState.ball_dy]
+	add [game_state + GameState.ball_y], ax
+
+	;; bar_x += bar_dx
+	mov ax, [game_state + GameState.bar_dx]
+	add [game_state + GameState.bar_x], ax
+
+	mov al, BAR_COLOR
+	call fil_bar
+
+	mov all, BALL_COLOR
+	call fill_ball
+
+	jmp stop_state
 stop_state:
   popa
   iret
 
+fill_bar:
+	mov cx, word [game_state + GameState.bar_len]
+	mov bx, BAR_HEIGHT
+	mov si, game_state + GameState.bar_x
+	jmp fill_react
+
+fill_ball:
+	mov cx, BALL_WIDTH
+	mov bx, BALL_HEIGHT
+	mov si, game_state + GameState.ball_x
+
+fill_rect:
+	imul di, [si + 2], WIDTH
+	add di, [si]
+	
+initial_game_state:
+istruc GameState
+	at GameState.running, db 1
+	at GameState.ball_x, dw 30
+	at GameState.ball_y, dw 30
+	at GameState.ball_dx, dw BALL_VELOCITY
+	at GameState.ball_dy, dw -BALL_VELOCITY
+	at GameState.bar_x, dw 10
+	at GameState.bar_y, dw HEIGHT - BAR_INITIAL_Y
+	at GameState.bar_dx, dw BAR_VELOCITY
+	at GameState.bar_len, dw 100
+	at GameState.score_sign, times SCORE_DIGIT_COUNT db '0'
+iend
+
+game_over_sign:	 db "Game Over"
+game_over_sign_len equ $ - game_over_sign
+	
+%assign sizeOfProgram $ - $$
+%warning Size or the program: sizeOfProgram bytes
+	
+game_state:
+	dw 0xaa55
+
+	%if $ - $$ != 512
+	  %fatal Resulting size is not 512
+	%endif
