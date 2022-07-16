@@ -150,7 +150,13 @@ running_state:
 .neg_bar_dx:
 	neg word[game_state + GameState.bar_dx]
 	mov word[game_state + GameState.bar_x], ax
+.bar_x_col:
+	mov bx, word [game_state + GameState.ball_x]
+	cmp word [game_state + GameState.bar_x], bx
+	jp .unkebab
 
+	sub bx, word [game_state + GameState]
+	
 stop_state:
   popa
   iret
