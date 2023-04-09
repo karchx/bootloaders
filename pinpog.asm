@@ -25,7 +25,7 @@
 
 %define BALL_WIDTH  	16
 %define BALL_HEIGHT 	16
-%define BALL_VELOCITY 16
+%define BALL_VELOCITY 6
 %define BALL_COLOR COLOR_YELLOW
 
 %define BAR_INITIAL_Y 50
@@ -33,7 +33,7 @@
 %define BAR_COLOR COLOR_LIGHTBLUE
 %define BAR_VELOCITY  10
 
-%define VGA_OFFSET 0xA00 	; direccion del vga
+%define VGA_OFFSET 0xA000 	; direccion del vga
 
 %define SCORE_DIGIT_COUNT 5
 
